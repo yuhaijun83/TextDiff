@@ -108,7 +108,7 @@ public class TextDiff {
 			sbNewFileNameList.append(entryNew.getKey());			
 		}
 		
-		if (!sbOldFileNameList.equals(sbNewFileNameList)) {
+		if (!(sbOldFileNameList.toString()).equals(sbNewFileNameList.toString())) {
 			System.out.println("両方のファイル名が一致していない！");
 			System.out.println(strOldPath + " => FileName All Size ：" + sbOldFileNameList.toString().length());
 			System.out.println(strNewPath + " => FileName All Size ：" + sbNewFileNameList.toString().length());
