@@ -53,27 +53,30 @@ public class TextDiff {
 	private static void fileChk(String[] args) throws IOException {
 		
 		List<String> lstDiffFile = new ArrayList<String>();
+		lstDiffFile.add("ファイル内容一致していないファイルの一覧：");
 
 		String strOldPath = args[0];
 		String strNewPath = args[1];
 
 		File fileOldPath = new File(strOldPath);
 		File fileNewPath = new File(strNewPath);
-
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
 		if (!fileOldPath.exists()) {
-			System.out.println("フォルダ：" + strOldPath + "　が見つかりません！");
+			System.out.println("フォルダ：" + strOldPath + " が見つかりません！");
 			exit();
 		} else if (!fileOldPath.isDirectory()) {
-			System.out.println(strOldPath + "　フォルダではない！");
+			System.out.println(strOldPath + " フォルダではない！");
 			exit();
 		} else if (!fileNewPath.exists()) {
-			System.out.println("フォルダ：" + strNewPath + "　が見つかりません！");
+			System.out.println("フォルダ：" + strNewPath + " が見つかりません！");
 			exit();
 		} else if (!fileNewPath.isDirectory()) {
-			System.out.println(strNewPath + "　フォルダではない！");
+			System.out.println(strNewPath + " フォルダではない！");
 			exit();
 		}
-
+		
+		/////////////////////////////////////////////////////////////////////////////////////////
 		Map<String, List<String>> mapOld = readFolder(fileOldPath);
 		Map<String, List<String>> mapNew = readFolder(fileNewPath);
 
@@ -81,19 +84,37 @@ public class TextDiff {
 		int iNewFile = mapNew.size();
 		if (iOldFile != iNewFile) {
 			System.out.println("両方のファイル個数が違う！");
-			System.out.println(strOldPath + "：" + iOldFile);
-			System.out.println(strNewPath + "：" + iNewFile);
+			System.out.println(strOldPath + " =>：" + iOldFile);
+			System.out.println(strNewPath + " =>：" + iNewFile);
 			exit();
 		}
 
 		if (iOldFile == 0) {
-			System.out.println(strOldPath + "：　ファイルが見つかりません！");
+			System.out.println(strOldPath + " =>：ファイルが見つかりません！");
 			exit();
 		}
 		if (iNewFile == 0) {
-			System.out.println(fileNewPath + "：　ファイルが見つかりません！");
+			System.out.println(fileNewPath + " =>：ファイルが見つかりません！");
 			exit();
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////
+		StringBuilder sbOldFileNameList = new StringBuilder();
+		StringBuilder sbNewFileNameList = new StringBuilder();
+		
+		for (Map.Entry<String, List<String>> entryOld : mapOld.entrySet()) {
+			sbOldFileNameList.append(entryOld.getKey());			
+		}
+		for (Map.Entry<String, List<String>> entryNew : mapOld.entrySet()) {
+			sbNewFileNameList.append(entryNew.getKey());			
+		}
+		
+		if (!sbOldFileNameList.equals(sbNewFileNameList)) {
+			System.out.println("両方のファイル名が一致していない！");
+			System.out.println(strOldPath + " => FileName All Size ：" + sbOldFileNameList.toString().length());
+			System.out.println(strNewPath + " => FileName All Size ：" + sbNewFileNameList.toString().length());
+			exit();
+		}
+		/////////////////////////////////////////////////////////////////////////////////////////
 
 		String oldFileName = null;
 		List<String> oldLstFileInfo = null;
@@ -142,7 +163,7 @@ public class TextDiff {
 			}
 		}
 		
-		if (lstDiffFile.size() > 0) {
+		if (lstDiffFile.size() > 1) {
 			String fileName = "C:\\Windows\\Temp\\TextDiff.txt";
 			File file = new File(fileName);
 			if (file.exists() && file.isFile()) {
