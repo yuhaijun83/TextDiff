@@ -165,15 +165,12 @@ public class TextDiff {
 		if (file.exists() && file.isFile()) {
 			file.delete();
 		}
-		
-		toWriteFile(fileName, lstNotFoundOldFileName, lstNotFoundNewFileName, lstDiffFile);
-		Runtime.getRuntime().exec("notepad.exe " + fileName);
 
-		if (lstDiffFile.size() > 0) {
-
-
-		} else {
+		if (lstNotFoundOldFileName.size() == 0 && lstNotFoundNewFileName.size() == 0 && lstDiffFile.size() == 0) {
 			System.out.println("両方のファイルリストとファイル内容が同じです！");
+		} else {
+			toWriteFile(fileName, lstNotFoundOldFileName, lstNotFoundNewFileName, lstDiffFile);
+			Runtime.getRuntime().exec("notepad.exe " + fileName);
 		}
 	}
 	
