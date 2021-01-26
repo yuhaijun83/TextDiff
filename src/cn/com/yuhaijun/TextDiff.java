@@ -142,7 +142,6 @@ public class TextDiff {
 			
 			if (oldLstCount != newLstCount) {
 				lstDiffFile.add(fileName);
-				break;
 			} else {
 				for (int i = 0; i < oldLstCount; i++) {
 					if (i == 4) {
