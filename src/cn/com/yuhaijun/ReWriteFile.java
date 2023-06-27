@@ -19,6 +19,7 @@ public class ReWriteFile {
 		String strProjectPath = "C:\\MyGitHub\\TextDiff"; // TODO
 		
 		readFolder(new File(strProjectPath));
+		
 	}
 	
 	private static void readFolder(File filePath) throws IOException {
@@ -31,7 +32,7 @@ public class ReWriteFile {
 				fileName = file.getName();
 				if (fileName.endsWith(".html")) {
 					lstFileLine = readFile(file);
-					toWriteFile(fileName, lstFileLine);
+					toWriteFile(file, lstFileLine);
 					System.out.println("----------------------------");
 				} else {
 					continue;
@@ -46,11 +47,12 @@ public class ReWriteFile {
 		List<String> lstLine = new ArrayList<String>();
 
 		Pattern p = Pattern.compile("<script src=\"(.*?)\"");
-		System.out.println("文件名:" + file.getName());
+		System.out.println("文件名:" + file.getPath());
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(file));
 			String tempString = null;
+			String strBeforeSpace = null;
 			while ((tempString = reader.readLine()) != null) {
 				
 				Matcher m = p.matcher(tempString);
@@ -58,7 +60,8 @@ public class ReWriteFile {
 					String preTime = new SimpleDateFormat("yyyyddHHmm").format(new Date().getTime());
 					String afterRegex = "date=" + preTime;
 
-					System.out.println("修正前:" + m.group());
+					strBeforeSpace = getBeforeSpace(tempString);
+					System.out.println("修正前:" + m.group());					
 					String[] beforeRegex1 = m.group().split("\\?");
 					String strmRegex = m.group();
 					String jsRegex = "";
@@ -68,11 +71,13 @@ public class ReWriteFile {
 						strmRegex = m.group().replaceAll(beforeRegex2[0], afterRegex);
 					} else {
 						jsRegex = m.group().substring(0, m.group().length() - 1);
-						jsAfterRegex = jsRegex + "" + afterRegex + "";
+						jsAfterRegex = jsRegex + "?" + afterRegex + "\"";
 						strmRegex = m.group().replaceAll(m.group(), jsAfterRegex);
 					}
+					strmRegex = strmRegex + " />";
+					
 					System.out.println("修正俊:" + strmRegex);
-					tempString = strmRegex;
+					tempString = strBeforeSpace + strmRegex;
 				}
 				
 				lstLine.add(tempString);
@@ -93,10 +98,10 @@ public class ReWriteFile {
 		return lstLine;
 	}
 
-	private static void toWriteFile(String fileName, List<String> lstFileName) throws IOException {
+	private static void toWriteFile(File file, List<String> lstFileName) throws IOException {
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(fileName, true);
+			writer = new FileWriter(file, false);
 
 			if (lstFileName.size() > 0) {
 				for (String content : lstFileName) {
@@ -117,6 +122,17 @@ public class ReWriteFile {
 				}
 			}
 		}
+	}
+	
+	private static String getBeforeSpace(String str) {
+		String strRet = "";
+		
+	    int i = str.indexOf("<script src=");
+	    if (i > 0) {
+	    	strRet = str.substring(0, i);
+	    }	    
+		
+		return strRet;
 	}
 
 }
